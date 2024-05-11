@@ -1,40 +1,42 @@
 package storage
 
 import (
-  "database/sql"
-  "fmt"
-  "log"
-  "os"
+	"github.com/go-sql-driver/mysql"
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
 
-  "github.com/joho/godotenv"
-  _ "github.com/lib/pq"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 
 var db *sql.DB
 
 func InitDB() {
-  err := godotenv.Load()
-  if err != nil {
-    log.Fatal("Error loading .env file")
-  }
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
-  dbHost := os.Getenv("DB_HOST")
-  dbPort := os.Getenv("DB_PORT")
-  dbUser := os.Getenv("DB_USER")
-  dbPass := os.Getenv("DB_PASSWORD")
-  dbName := os.Getenv("DB_NAME")
+	cfg := mysql.Config{
+        User: os.Getenv("DBUSER"),
+        Passwd: os.Getenv("DBPASS"),
+        Net: os.Getenv("DB_NET"),
+        Addr: os.Getenv("DB_ADDRESS"),
+        DBName: "fitness",
+    }
 
-  db, err = sql.Open("postgres", fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", dbHost, dbUser, dbPass, dbName, dbPort))
+    db, err = sql.Open("mysql", cfg.FormatDSN())
+    if err != nil {
+        log.Fatal(err)
+    }
 
-  if err != nil {
-    panic(err.Error())
-  }
+    pingErr := db.Ping()
+    if pingErr != nil {
+        log.Fatal(pingErr)
+    }
 
-  err = db.Ping()
-  if err != nil {
-    panic(err.Error())
-  }
-
-  fmt.Println("Successfully connected to database")
+	fmt.Println("Successfully connected to fitness database")
 }
