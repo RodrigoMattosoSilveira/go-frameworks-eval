@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 )
 
 
@@ -26,6 +25,7 @@ func InitDB() {
         Net: os.Getenv("DB_NET"),
         Addr: os.Getenv("DB_ADDRESS"),
         DBName: "fitness",
+        ParseTime: true,
     }
 
     db, err = sql.Open("mysql", cfg.FormatDSN())
@@ -39,4 +39,11 @@ func InitDB() {
     }
 
 	fmt.Println("Successfully connected to fitness database")
+}
+
+// Incliuded in the repository, but not in the blog;
+// I was not able to send the author a note to inform him
+// 
+func GetDB() *sql.DB {
+	return db
 }
