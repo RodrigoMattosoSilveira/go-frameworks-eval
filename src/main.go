@@ -12,8 +12,11 @@ import (
 	
 	 storage.InitDB()
 
-	// Add this line
+	// Routes
+	// 
 	e.POST("/users", handlers.CreateUser)
+	// Add this line
+	e.POST("measurements", handlers.CreateMeasurements)
 	//----------------
 
 	e.Logger.Fatal(e.Start(":8080"))

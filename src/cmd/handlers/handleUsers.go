@@ -17,3 +17,14 @@ func CreateUser(c echo.Context) error {
 	}
 	return c.JSON(http.StatusCreated, newUser)
 }
+
+
+func CreateMeasurements(c echo.Context) error {
+	measurements := models.Measurements{}
+	c.Bind(&measurements)
+	neNMeasurement, err := repositories.CreateMeasurements(measurements)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusCreated, neNMeasurement)
+}
