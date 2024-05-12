@@ -10,9 +10,11 @@ import (
 	e := echo.New()
 	e.GET("/", handlers.Home)
 	
-	 // Add this line
 	 storage.InitDB()
-	 //----------------
+
+	// Add this line
+	e.POST("/users", handlers.CreateUser)
+	//----------------
 
 	e.Logger.Fatal(e.Start(":8080"))
   }
