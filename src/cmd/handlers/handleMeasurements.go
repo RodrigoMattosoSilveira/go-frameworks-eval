@@ -37,3 +37,7 @@ func UpdateMeasurementsHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, updatedMeasurements)
   }
   
+//   TODO add support for READ including filters, DELETE
+//	TODO Add parameter validation logic
+// 	TODO explore middleware
+//  TODO Learn more about routing

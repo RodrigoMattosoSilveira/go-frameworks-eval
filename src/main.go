@@ -19,5 +19,7 @@ func main() {
 	e.POST("/measurements", handlers.CreateMeasurementsHandler)
 	e.PUT("/measurements/:id", handlers.UpdateMeasurementsHandler)
 
+	e.Use(handlers.LogRequest)
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
