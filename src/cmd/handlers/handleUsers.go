@@ -36,13 +36,3 @@ func UpdateUserHandler(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, updatedUser)
 }
-
-func CreateMeasurementsHandler(c echo.Context) error {
-	measurements := models.Measurements{}
-	c.Bind(&measurements)
-	neNMeasurement, err := repositories.CreateMeasurementsDb(measurements)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusCreated, neNMeasurement)
-}

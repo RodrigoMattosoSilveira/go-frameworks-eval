@@ -11,12 +11,8 @@ import (
 func CreateUserDb(user models.User) (models.User, error) {
 	db := storage.GetDB()
 
-	// POSTGRESQL
-	//
-	// sqlStatement := `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING Id`
-
 	// MySQL
-	//
+	// 
 	result, err := db.Exec("INSERT INTO user (name, email, password) VALUES (?, ?, ?)", user.Name, user.Email, user.Password)
 	if err != nil {
 		return user, err
