@@ -12,7 +12,7 @@ func LogRequest(next echo.HandlerFunc) echo.HandlerFunc {
     start := time.Now()
     err := next(c)
     stop := time.Now()
-    fmt.Printf("Request: %s %s %s %d\n", c.Request().Method, c.Request().URL, stop.Sub(start), c.Response().Status)
+    fmt.Printf("Request: %s %s %s %d\n", c.Request().Method, c.Request().RequestURI, stop.Sub(start), c.Response().Status)
     return err
   }
 }
