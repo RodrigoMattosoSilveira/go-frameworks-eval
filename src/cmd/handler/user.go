@@ -109,5 +109,5 @@ func (h handler) Delete(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	return id, nil
 }

@@ -31,7 +31,7 @@ func (repo repository) Create(ctx *gofr.Context, user *model.User) (*model.User,
 	}
 
 	row := ctx.SQL.QueryRow("SELECT * FROM user WHERE Id = ?", id)
-	if err := row.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt, &user.DeletedAt); err != nil {
+	if err := row.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt, &user.Active); err != nil {
 		if err == sql.ErrNoRows {
 			return user, fmt.Errorf("id %d: no such user", id)
 		}
@@ -42,8 +42,21 @@ func (repo repository) Create(ctx *gofr.Context, user *model.User) (*model.User,
 }
 
 // A RepositoryInt interface method
-func (s repository) GetByID(ctx *gofr.Context, id int64) (*model.User, error) {
-	panic("unimplemented")
+func (repo repository) GetByID(ctx *gofr.Context, id int64) (*model.User, error) {
+
+	row := ctx.SQL.QueryRow("SELECT * FROM user WHERE Id = ?", id)
+
+	var user model.User;
+	if err := row.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt, &user.Active); err != nil {
+		if err == sql.ErrNoRows {
+			return &user, fmt.Errorf("id %d: no such user", id)
+		}
+		return &user, fmt.Errorf("id %d: %v", id, err)
+	}
+
+	return &user, nil
+
+	// panic("unimplemented")
 }
 
 // A RepositoryInt interface method
