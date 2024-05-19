@@ -61,7 +61,33 @@ func (repo repository) GetByID(ctx *gofr.Context, id int64) (*model.User, error)
 
 // A RepositoryInt interface method
 func (s repository) GetAll(ctx *gofr.Context) ([]model.User, error) {
-	panic("unimplemented")
+	rows, err := ctx.SQL.QueryContext(ctx, "SELECT * FROM user WHERE active LIKE 'yes'")
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var users []model.User
+	for rows.Next() {
+		var user model.User
+
+
+		err = rows.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt, &user.Active)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+	// panic("unimplemented")
 }
 
 // A RepositoryInt interface method
