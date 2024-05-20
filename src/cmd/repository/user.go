@@ -91,8 +91,30 @@ func (s repository) GetAll(ctx *gofr.Context) ([]model.User, error) {
 }
 
 // A RepositoryInt interface method
-func (s repository) Update(ctx *gofr.Context, order *model.User) (*model.User, error) {
-	panic("unimplemented")
+// 
+//  Since this is a framework evaluation I'll not optimize to update only the attributes that changed
+// TODO figure out a way to update only the attributes that changed
+// 
+func (s repository) Update(ctx *gofr.Context, newUser *model.User) (*model.User, error) {
+	var user model.User
+
+	_, err := ctx.SQL.ExecContext(ctx,
+		"UPDATE user SET name = ?, email = ?, password = ? WHERE id = ? and active LIKE ?", 
+		newUser.Name, newUser.Email, newUser.Password, newUser.Id, "yes")
+	if err != nil {
+		// return nil, fmt.Errorf(`Update: unable to update user id: %d`, newUser.Id)
+		return nil, fmt.Errorf(err.Error())
+	}
+
+	row := ctx.SQL.QueryRow("SELECT * FROM user WHERE Id = ? and active LIKE ?", newUser.Id, "yes")
+	if err := row.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt, &user.Active); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("Update; unable to find updated user id %d", newUser.Id)
+		}
+		return nil, fmt.Errorf("id %d: %v", newUser.Id, err)
+	}
+
+	return &user, nil
 }
 
 // A RepositoryInt interface method
@@ -116,84 +138,3 @@ func (s repository) Delete(ctx *gofr.Context, id int64) error {
 	return nil
 
 }
-
-// func (s repository) GetAll(ctx *gofr.Context) ([]model.User, error) {
-// 	rows, err := ctx.SQL.QueryContext(ctx, "SELECT id, cust_id, products, status FROM orders WHERE deleted_at IS NULL")
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	defer rows.Close()
-
-// 	var orders []model.User
-
-// 	for rows.Next() {
-// 		var o model.User
-
-// 		err = rows.Scan(&o.ID, &o.CustomerID, pq.Array(&o.Products), &o.Status)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-
-// 		orders = append(orders, o)
-// 	}
-
-// 	err = rows.Err()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return orders, nil
-// }
-
-// func (s repository) GetByID(ctx *gofr.Context, id uuid.UUID) (*model.Order, error) {
-// 	var order model.OrUserder
-
-// 	err := ctx.SQL.QueryRowContext(ctx, "SELECT id, cust_id, products, status FROM orders WHERE id=$1 and deleted_at IS NULL", id).
-// 		Scan(&order.ID, &order.CustomerID, pq.Array(&order.Products), &order.Status)
-
-// 	switch {
-// 	case err == sql.ErrNoRows:
-// 		return nil, err
-// 	case err != nil:
-// 		return nil, err
-// 	}
-
-// 	return &order, nil
-// }
-
-// func (s repository) Update(ctx *gofr.Context, order *model.User) (*model.User, error) {
-// 	updatedAt := time.Now().UTC().Format(time.RFC3339)
-
-// 	res, err := ctx.SQL.ExecContext(ctx, "UPDATE orders SET cust_id=$1, products=$2, status=$3, updated_at=$4 WHERE id=$5 and deleted_at IS NULL",
-// 		order.CustomerID, pq.Array(order.Products), order.Status, updatedAt, order.ID)
-// 	if err != nil {
-// 		return nil, errors.New("DB error")
-// 	}
-
-// 	rowsAffected, _ := res.RowsAffected()
-
-// 	if rowsAffected == 0 {
-// 		return nil, errors.New("entity not found")
-// 	}
-
-// 	return order, nil
-// }
-
-// func (s repository) Delete(ctx *gofr.Context, id uuid.UUID) error {
-// 	deletedAt := time.Now().UTC().Format(time.RFC3339)
-// 	updatedAt := deletedAt
-
-// 	res, err := ctx.SQL.ExecContext(ctx, "UPDATE orders SET deleted_at=$1, updated_at=$2 WHERE id=$3 and deleted_at IS NULL", deletedAt, updatedAt, id)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	rowsAffected, _ := res.RowsAffected()
-
-// 	if rowsAffected == 0 {
-// 		return err
-// 	}
-
-// 	return nil
-// }
