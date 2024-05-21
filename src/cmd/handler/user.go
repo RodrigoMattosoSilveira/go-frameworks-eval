@@ -104,10 +104,10 @@ func (h handler) Delete(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 	
-	err = h.service.Delete(ctx, id)
+	resp, err := h.service.Delete(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	return id, nil
+	return resp, nil
 }

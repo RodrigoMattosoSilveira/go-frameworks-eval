@@ -31,6 +31,6 @@ func (s service) Update(ctx *gofr.Context, order *model.User) (*model.User, erro
 	return s.store.Update(ctx, order)
 }
 
-func (s service) Delete(ctx *gofr.Context, id int64) error {
+func (s service) Delete(ctx *gofr.Context, id int64)  (*model.User, error) {
 	return s.store.Delete(ctx, id)
 }

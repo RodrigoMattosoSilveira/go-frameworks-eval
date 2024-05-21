@@ -118,23 +118,31 @@ func (s repository) Update(ctx *gofr.Context, newUser *model.User) (*model.User,
 }
 
 // A RepositoryInt interface method
-func (s repository) Delete(ctx *gofr.Context, id int64) error {
+func (s repository) Delete(ctx *gofr.Context, id int64) (*model.User, error) {
 
 	var user model.User;
 	
-	row := ctx.SQL.QueryRow("SELECT * FROM user WHERE Id = ?", id)
+	row := ctx.SQL.QueryRow("SELECT * FROM user WHERE Id = ? and active LIKE ?", id, "yes")
 	if err := row.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt, &user.Active); err != nil {
 		if err == sql.ErrNoRows {
-			return fmt.Errorf("Delete: user %d not found", id)
+			return nil, fmt.Errorf("Delete: user %d not found", id)
 		}
-		return err
+		return nil, err
 	}
 
 	_, err := ctx.SQL.Exec("UPDATE user SET active = ? WHERE id = ?", "no", id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	row = ctx.SQL.QueryRow("SELECT * FROM user WHERE Id = ? and active LIKE ?", id, "no")
+	if err := row.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt, &user.Active); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("DELETE; unable to find deleted user id %d", id)
+		}
+		return nil, fmt.Errorf("id %d: %v", id, err)
+	}
+
+	return &user, nil
 
 }

@@ -11,5 +11,5 @@ type ServiceUserInt interface {
 	GetAll(ctx *gofr.Context) ([]model.User, error)
 	GetByID(ctx *gofr.Context, id int64) (*model.User, error)
 	Update(ctx *gofr.Context, user *model.User) (*model.User, error)
-	Delete(ctx *gofr.Context, id int64) error
+	Delete(ctx *gofr.Context, id int64)  (*model.User, error)
 }
