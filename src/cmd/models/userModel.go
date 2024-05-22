@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Post struct {
+type People struct {
 	gorm.Model
 	Id        int64
 	Name      string

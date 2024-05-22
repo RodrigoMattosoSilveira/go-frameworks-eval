@@ -6,10 +6,10 @@ import (
 )
 
 func init() {
- inits.LoadEnv()
- inits.DBInit()
+	inits.LoadEnv()
+	inits.DBInit()
 }
 
 func main() {
- inits.DB.AutoMigrate(&models.Post{})
+	inits.DB.AutoMigrate(&models.People{})
 }

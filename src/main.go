@@ -2,6 +2,7 @@ package main
 
 import (
 	"madronetek.com/go-frameworks-eval/cmd/inits"
+	"madronetek.com/go-frameworks-eval/cmd/controllers"
 	// "madronetek.com/go-frameworks-eval/cmd/models"
 
 
@@ -14,13 +15,15 @@ func init() {
 }
 
 func main() {
- r := gin.Default()
+	r := gin.Default()
 
- r.GET("/", func(c *gin.Context) {
-  c.JSON(200, gin.H{
-   "message": "Hello World!",
-  })
- })
+	r.GET("/", func(c *gin.Context) {
+			c.JSON(200, gin.H {
+			"message": "Hello World!",
+		})
+	})
 
- r.Run()
+	r.POST("/people", controllers.CreatePeople)
+
+	r.Run()
 }
