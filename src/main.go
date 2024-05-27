@@ -5,7 +5,7 @@ import (
 	"madronetek.com/go-frameworks-eval/cmd/controllers"
 	"madronetek.com/go-frameworks-eval/cmd/inits"
 	"madronetek.com/go-frameworks-eval/cmd/repository"
-	middlewares "madronetek.com/go-frameworks-eval/cmd/services"
+	"madronetek.com/go-frameworks-eval/cmd/services"
 
 	// "madronetek.com/go-frameworks-eval/cmd/models"
 
